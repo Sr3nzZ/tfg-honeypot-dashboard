@@ -7,7 +7,7 @@ from analytics import data, metrics, geo, temporal, ports, credentials, suricata
  
 layout.configure_page()
  
-T_INICIO = pd.Timestamp("2026-05-27T00:00:00Z", tz="UTC")
+T_INICIO = pd.Timestamp("2026-05-27T17:00:00Z", tz="UTC")
 T_FIN    = pd.Timestamp("2026-06-03T23:59:59Z", tz="UTC")
 RANGO_SEG = (T_FIN - T_INICIO).total_seconds()
 DURACION_REAL_SEG = 30 * 60  # 30 minutos
@@ -96,12 +96,12 @@ st.divider()
 if df.empty:
     st.info("Press ▶ Start to begin the simulation.")
 else:
-    metrics.renderizar(df)
-    geo.renderizar(df)
-    temporal.renderizar(df)
-    ports.renderizar(df)
-    credentials.renderizar(df)
-    suricata.renderizar(df)
+    metrics.render(df)
+    geo.render(df)
+    temporal.render(df)
+    ports.render(df)
+    credentials.render(df)
+    suricata.render(df)
  
     with st.expander("📋 Last 100 recorded events", expanded=False):
         cols_tabla = [c for c in ["timestamp", "honeypot", "src_ip", "dst_port",
