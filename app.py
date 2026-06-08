@@ -3,8 +3,8 @@ import streamlit as st
 from ui import layout
 from analytics import data, metrics, geo, temporal, ports, credentials, suricata
 
-layout.configurar_pagina()
-dias, honeypot_sel = layout.renderizar_sidebar()
+layout.configure_page()
+dias, honeypot_sel = layout.render_sidebar()
 
 df_raw = data.cargar_datos(dias)
 
@@ -14,14 +14,14 @@ if df_raw.empty:
 
 df = data.filtrar_honeypot(df_raw, honeypot_sel)
 
-layout.renderizar_cabecera(len(df), dias)
+layout.render_header(len(df), dias)
 
-metrics.renderizar(df)
-geo.renderizar(df)
-temporal.renderizar(df)
-ports.renderizar(df)
-credentials.renderizar(df)
-suricata.renderizar(df)
+metrics.render(df)
+geo.render(df)
+temporal.render(df)
+ports.render(df)
+credentials.render(df)
+suricata.render(df)
 
 cols_tabla = [c for c in [
     "timestamp", "honeypot", "src_ip", "dst_port",
