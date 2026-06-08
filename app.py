@@ -5,7 +5,7 @@ from datetime import timezone
 from ui import layout
 from analytics import data, metrics, geo, temporal, ports, credentials, suricata
  
-layout.configurar_pagina()
+layout.configure_page()
  
 T_INICIO = pd.Timestamp("2026-05-27T00:00:00Z", tz="UTC")
 T_FIN    = pd.Timestamp("2026-06-03T23:59:59Z", tz="UTC")
