@@ -31,7 +31,7 @@ def load_data(dias: int) -> pd.DataFrame:
         return pd.DataFrame()
 
     df = pd.DataFrame(res.data)
-    df["timestamp"] = pd.to_datetime(df["timestamp"], utc=True)
+    df["timestamp"] = pd.to_datetime(df["timestamp"], utc=True, format='ISO8601')
 
     for col in ("src_port", "dst_port", "alert_severity", "latitude", "longitude"):
         if col in df.columns:
