@@ -48,7 +48,7 @@ def render(df: pd.DataFrame) -> None:
     ui.section("Temporal analysis")
     col_hora, col_dia = ui.columns(1, 1)
     with col_hora:
-        ui.grafico(_create_hourly_attacks_chart(_attacks_by_hour(df)), key="temp_hora")
+        ui.plot(_create_hourly_attacks_chart(_attacks_by_hour(df)), key="temp_hora")
     with col_dia:
-        ui.grafico(_create_daily_attacks_chart(_attacks_by_day(df)), key="temp_dia")
+        ui.plot(_create_daily_attacks_chart(_attacks_by_day(df)), key="temp_dia")
     ui.separador()

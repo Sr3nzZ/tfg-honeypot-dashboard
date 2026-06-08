@@ -58,8 +58,8 @@ def render(df: pd.DataFrame) -> None:
         return
     col_firmas, col_sev = ui.columns(2, 1)
     with col_firmas:
-        ui.grafico(_create_signatures_chart(_top_alert_signatures(df_suri)), key="suri_firmas")
+        ui.plot(_create_signatures_chart(_top_alert_signatures(df_suri)), key="suri_firmas")
     with col_sev:
         if "alert_severity" in df_suri.columns:
-            ui.grafico(_create_severity_chart(_alerts_by_severity(df_suri)), key="suri_sev")
+            ui.plot(_create_severity_chart(_alerts_by_severity(df_suri)), key="suri_sev")
     ui.separador()

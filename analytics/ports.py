@@ -54,7 +54,7 @@ def render(df: pd.DataFrame) -> None:
     ui.section("🔌 Ports and protocols")
     col_puertos, col_honey = ui.columns(1, 1)
     with col_puertos:
-        ui.grafico(_create_ports_chart(_top_ports(df)), key="ports_top")
+        ui.plot(_create_ports_chart(_top_ports(df)), key="ports_top")
     with col_honey:
-        ui.grafico(_create_honeypot_chart(_attacks_by_honeypot(df)), key="ports_honey")
+        ui.plot(_create_honeypot_chart(_attacks_by_honeypot(df)), key="ports_honey")
     ui.separador()
