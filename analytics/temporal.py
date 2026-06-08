@@ -51,4 +51,4 @@ def render(df: pd.DataFrame) -> None:
         ui.plot(_create_hourly_attacks_chart(_attacks_by_hour(df)), key="temp_hora")
     with col_dia:
         ui.plot(_create_daily_attacks_chart(_attacks_by_day(df)), key="temp_dia")
-    ui.separador()
+    ui.separator()

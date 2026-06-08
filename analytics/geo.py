@@ -60,4 +60,4 @@ def render(df: pd.DataFrame) -> None:
             ui.no_data("geolocation")
     with col_paises:
         ui.plot(_create_country_bar_chart(_top_countries(df)), key="geo_paises")
-    ui.separador()
+    ui.separator()

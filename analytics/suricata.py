@@ -54,7 +54,7 @@ def render(df: pd.DataFrame) -> None:
     df_suri = _filter_suricata(df)
     if df_suri.empty:
         ui.no_data("Suricata")
-        ui.separador()
+        ui.separator()
         return
     col_firmas, col_sev = ui.columns(2, 1)
     with col_firmas:
@@ -62,4 +62,4 @@ def render(df: pd.DataFrame) -> None:
     with col_sev:
         if "alert_severity" in df_suri.columns:
             ui.plot(_create_severity_chart(_alerts_by_severity(df_suri)), key="suri_sev")
-    ui.separador()
+    ui.separator()
