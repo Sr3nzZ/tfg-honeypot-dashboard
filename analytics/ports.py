@@ -57,4 +57,4 @@ def render(df: pd.DataFrame) -> None:
         ui.plot(_create_ports_chart(_top_ports(df)), key="ports_top")
     with col_honey:
         ui.plot(_create_honeypot_chart(_attacks_by_honeypot(df)), key="ports_honey")
-    ui.separador()
+    ui.separator()
