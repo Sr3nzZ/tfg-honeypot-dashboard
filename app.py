@@ -23,13 +23,13 @@ ports.render(df)
 credentials.render(df)
 suricata.render(df)
 
-cols_tabla = [c for c in [
+cols_dataframe = [c for c in [
     "timestamp", "honeypot", "src_ip", "dst_port",
     "country", "username", "password", "alert_signature",
 ] if c in df.columns]
 
 with st.expander("📋 Last 100 recorded events", expanded=False):
-    from ui.components import tabla
-    tabla(df[cols_tabla].head(100).reset_index(drop=True), key="raw_events")
+    from ui.components import dataframe
+    dataframe(df[cols_dataframe].head(100).reset_index(drop=True), key="raw_events")
 
 layout.footer("Honeypot Dashboard")
