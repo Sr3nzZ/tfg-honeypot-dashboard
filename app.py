@@ -7,8 +7,8 @@ from analytics import data, metrics, geo, temporal, ports, credentials, suricata
  
 layout.configure_page()
  
-T_INICIO = pd.Timestamp("2026-05-27T17:00:00Z", tz="UTC")
-T_FIN    = pd.Timestamp("2026-06-03T23:59:59Z", tz="UTC")
+T_INICIO = pd.Timestamp("2026-05-27T18:55:02Z", tz="UTC")
+T_FIN    = pd.Timestamp("2026-06-04T23:59:59Z", tz="UTC")
 RANGO_SEG = (T_FIN - T_INICIO).total_seconds()
 DURACION_REAL_SEG = 30 * 60  # 30 minutos
 FACTOR = RANGO_SEG / DURACION_REAL_SEG  # seg de datos por seg real
@@ -104,11 +104,11 @@ else:
     suricata.render(df)
  
     with st.expander("📋 Last 100 recorded events", expanded=False):
-        cols_tabla = [c for c in ["timestamp", "honeypot", "src_ip", "dst_port",
+        cols_dataframe = [c for c in ["timestamp", "honeypot", "src_ip", "dst_port",
                                    "country", "username", "password", "alert_signature"]
                       if c in df.columns]
-        from ui.components import tabla
-        tabla(df[cols_tabla].tail(100).reset_index(drop=True), key="raw_events")
+        from ui.components import dataframe
+        dataframe(df[cols_dataframe].tail(100).reset_index(drop=True), key="raw_events")
  
 layout.footer("🍯 Honeypot Dashboard · TFG · Data May 27 – Jun 3, 2026 · Designed for real-time updates via EC2 exporter")
  
