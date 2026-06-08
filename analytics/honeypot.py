@@ -75,7 +75,16 @@ def render(df: pd.DataFrame) -> None:
     df_honeypots = _filter_honeypots(df)
     df_tools = _filter_tools(df)
 
-    col1, col2 = ui.columns(1, 1)
+    total_honeypots = len(df_honeypots)
+    total_tools = len(df_tools)
+
+    df_comparison = pd.DataFrame({
+        "Category": ["Honeypots", "Tools"],
+        "Attacks": [total_honeypots, total_tools]
+    })
+
+    # layout
+    col1, col2, col3 = ui.columns(1, 1, 1)
 
     with col1:
         if not df_honeypots.empty:
@@ -95,5 +104,11 @@ def render(df: pd.DataFrame) -> None:
                 _create_pie_chart(df_chart_tools, "Tools activity distribution"),
                 key="tools_pie"
             )
+
+    with col3:
+        ui.plot(
+            _create_pie_chart(df_comparison, "Tools vs Honeypots"),
+            key="comparison_pie"
+        )
 
     ui.separator()
