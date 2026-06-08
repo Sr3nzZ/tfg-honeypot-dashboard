@@ -18,7 +18,7 @@ def _attacks_by_day_hour_honeypot(df: pd.DataFrame) -> pd.DataFrame:
     return (
         df.groupby(["day_hour", "honeypot"]).size()
         .reset_index(name="attacks")
-        .sort_values("day_hour")
+        .sort_values(["honeypot", "day_hour"])
     )
  
 def _create_hourly_attacks_chart(df_hora: pd.DataFrame) -> px.Figure:
