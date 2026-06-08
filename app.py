@@ -6,7 +6,7 @@ from analytics import data, metrics, geo, temporal, ports, credentials, suricata
 layout.configure_page()
 dias, honeypot_sel = layout.render_sidebar()
 
-df_raw = data.cargar_datos(dias)
+df_raw = data.load_data(dias)
 
 if df_raw.empty:
     st.warning("No data available. Make sure exportar.py is running on the EC2 instance.")
