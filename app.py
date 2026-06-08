@@ -95,14 +95,7 @@ def dashboard():
  
     if not df.empty and "country" in df.columns:
         countries = ["All"] + sorted(df["country"].dropna().unique().tolist())
-
-        st.sidebar.selectbox(
-            "Country selector",
-            options=countries,
-            index=countries.index(st.session_state["country_sel"])
-            if st.session_state["country_sel"] in countries else 0,
-            key="country_sel"
-        )
+        st.session_state["country_options"] = countries
         
     if st.session_state["country_sel"] != "All" and not df.empty:
         df = df[df["country"] == st.session_state["country_sel"]]
