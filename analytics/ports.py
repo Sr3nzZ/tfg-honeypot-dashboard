@@ -55,7 +55,7 @@ def _create_services_chart(df_ports: pd.DataFrame) -> px.Figure:
 def render(df: pd.DataFrame) -> None:
     ui.section("Ports and protocols")
 
-    col_ports, col_services = ui.columns(1, 1, 1)
+    col_ports, col_services = ui.columns(1, 1)
 
     top_ports = _top_ports(df)
 
