@@ -46,7 +46,7 @@ with st.sidebar:
 
     country_sel = st.selectbox(
         "Country selector",
-        options=["All"],
+        options=st.session_state.get("country_options", ["All"]),
         key="country_sel"
     )
  
