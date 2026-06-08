@@ -11,17 +11,17 @@ def _filter_cowrie(df: pd.DataFrame) -> pd.DataFrame:
 
 def _top_usernames(df: pd.DataFrame, n: int = TOP_N) -> pd.DataFrame:
     return (
-        df["username"].value_counts().head(n)
+        df["username"].astype(str).value_counts().head(n)
         .reset_index()
-        .rename(columns={"username": "Username", "count": "Attempts"})
+        .rename(columns={"index": "Username", "username": "Attempts"})
     )
 
 
 def _top_passwords(df: pd.DataFrame, n: int = TOP_N) -> pd.DataFrame:
     return (
-        df["password"].value_counts().head(n)
+        df["password"].astype(str).value_counts().head(n)
         .reset_index()
-        .rename(columns={"password": "Password", "count": "Attempts"})
+        .rename(columns={"index": "Password", "password": "Attempts"})
     )
 
 
@@ -42,19 +42,6 @@ def _create_horizontal_bar_chart(df_datos, x, y, titulo, paleta) -> px.Figure:
     )
     apply_base_layout(fig, margin=dict(l=0, r=0, t=40, b=0))
     apply_yaxis_reversed(fig)
-    return fig
-
-def _create_password_treemap(df: pd.DataFrame) -> px.Figure:
-    fig = px.treemap(
-        df,
-        path=["Password"],
-        values="Attempts",
-        title="Password distribution (Treemap)",
-        color="Attempts",
-        color_continuous_scale=PALETTE_SEQUENTIAL_RED,
-    )
-
-    apply_base_layout(fig)
     return fig
 
 
