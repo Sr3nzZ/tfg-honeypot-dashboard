@@ -1,5 +1,7 @@
 import pandas as pd
 import plotly.express as px
+from wordcloud import WordCloud
+import matplotlib.pyplot as plt
 from config.settings import TOP_N
 from ui.styles import apply_base_layout, apply_yaxis_reversed, PALETTE_SEQUENTIAL_PURPLE, PALETTE_SEQUENTIAL_RED, PALETTE_SEQUENTIAL_ORANGE
 from ui import components as ui
@@ -44,18 +46,28 @@ def _create_horizontal_bar_chart(df_datos, x, y, titulo, paleta) -> px.Figure:
     apply_yaxis_reversed(fig)
     return fig
 
-def _create_password_treemap(df: pd.DataFrame) -> px.Figure:
-    fig = px.treemap(
-        df,
-        path=["Password"],
-        values="Attempts",
-        title="Password distribution (Treemap)",
-        color="Attempts",
-        color_continuous_scale=PALETTE_SEQUENTIAL_RED,
-    )
+def _create_wordcloud(series: pd.Series, title: str) -> plt.Figure:
+    text = " ".join(series.dropna().astype(str))
 
-    apply_base_layout(fig)
+    wc = WordCloud(
+        width=800,
+        height=400,
+        background_color="white",
+        colormap="Reds"
+    ).generate(text)
+
+    fig, ax = plt.subplots()
+    ax.imshow(wc, interpolation="bilinear")
+    ax.axis("off")
+    ax.set_title(title)
+
     return fig
+
+def _top_user_series(df: pd.DataFrame, n: int = TOP_N) -> pd.Series:
+    return df["username"].value_counts().head(n)
+
+def _top_password_series(df: pd.DataFrame, n: int = TOP_N) -> pd.Series:
+    return df["password"].value_counts().head(n)
 
 
 def render(df: pd.DataFrame) -> None:
@@ -67,11 +79,21 @@ def render(df: pd.DataFrame) -> None:
         return
     col_user, col_pass, col_combo = ui.columns(1, 1, 1)
     with col_user:
-        ui.plot(_create_horizontal_bar_chart(_top_usernames(df_cowrie), "Attempts", "Username", "Top usernames", PALETTE_SEQUENTIAL_PURPLE), key="creds_users")
+        ui.plot(
+            _create_wordcloud(
+                _top_user_series(df_cowrie),
+                "Usernames WordCloud"
+            ),
+            key="creds_users_wc"
+        )
+
     with col_pass:
         ui.plot(
-            _create_password_treemap(_top_passwords(df_cowrie)),
-            key="creds_pass"
+            _create_wordcloud(
+                _top_password_series(df_cowrie),
+                "Passwords WordCloud"
+            ),
+            key="creds_pass_wc"
         )
     with col_combo:
         ui.plot(_create_horizontal_bar_chart(_top_username_password_combinations(df_cowrie), "Attempts", "Combination", "Top combinations", PALETTE_SEQUENTIAL_ORANGE), key="creds_combo")
