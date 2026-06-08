@@ -23,15 +23,6 @@ def _top_ports(df: pd.DataFrame, n: int = TOP_N) -> pd.DataFrame:
     return data
 
 
-def _attacks_by_honeypot(df: pd.DataFrame) -> pd.DataFrame:
-    return (
-        df["honeypot"].dropna()
-        .value_counts()
-        .reset_index()
-        .rename(columns={"honeypot": "Honeypot", "count": "Attacks"})
-    )
-
-
 def _create_ports_chart(df_ports: pd.DataFrame) -> px.Figure:
     fig = px.pie(
         df_ports,
@@ -51,28 +42,13 @@ def _create_services_chart(df_ports: pd.DataFrame) -> px.Figure:
         df_ports,
         names="Service",
         values="Attacks",
-        title=f"Top {TOP_N} most attacked services",
+        title=f"Most attacked services",
         color_discrete_sequence=PALETTE_CATEGORICAL,
         hole=0.4,
     )
 
     apply_base_layout(fig, legend=dict(orientation="h", y=-0.1))
     return fig
-
-
-def _create_honeypot_chart(df_honey: pd.DataFrame) -> px.Figure:
-    fig = px.pie(
-        df_honey,
-        names="Honeypot",
-        values="Attacks",
-        title="Distribution by honeypot",
-        color_discrete_sequence=PALETTE_CATEGORICAL,
-        hole=0.45,
-    )
-
-    apply_base_layout(fig, legend=dict(orientation="h", y=-0.1))
-    return fig
-
 
 
 
@@ -82,7 +58,6 @@ def render(df: pd.DataFrame) -> None:
     col_ports, col_services, col_honeypot = ui.columns(1, 1, 1)
 
     top_ports = _top_ports(df)
-    honey_data = _attacks_by_honeypot(df)
 
     with col_ports:
         ui.plot(
@@ -94,12 +69,6 @@ def render(df: pd.DataFrame) -> None:
         ui.plot(
             _create_services_chart(top_ports),
             key="services_chart"
-        )
-
-    with col_honeypot:
-        ui.plot(
-            _create_honeypot_chart(honey_data),
-            key="honeypot_chart"
         )
 
     ui.separator()
