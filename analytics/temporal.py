@@ -36,13 +36,21 @@ def _attacks_by_day_hour_honeypot(df: pd.DataFrame, tools: bool = False) -> pd.D
  
 def _create_hourly_attacks_chart(df_hora: pd.DataFrame) -> px.Figure:
     fig = px.bar(
-        df_hora, x="hour", y="attacks",
-        title="Attacks by hour of day (UTC)",
-        labels={"hour": "Hour", "attacks": "Attacks"},
-        color="attacks", color_continuous_scale=PALETTE_SEQUENTIAL_ORANGE,
+        df_hora,
+        x="day_hour",
+        y="attacks",
+        title="Attacks by day and hour (UTC)",
+        labels={"day_hour": "Day & Hour", "attacks": "Attacks"},
+        color="attacks",
+        color_continuous_scale=PALETTE_SEQUENTIAL_ORANGE,
     )
+
     apply_base_layout(fig)
-    fig.update_layout(xaxis=dict(tickmode="linear", tick0=0, dtick=2))
+
+    fig.update_layout(
+        xaxis=dict(tickangle=-45),
+    )
+
     return fig
  
  
