@@ -10,29 +10,25 @@ def _filter_cowrie(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def _top_usernames(df: pd.DataFrame, n: int = TOP_N) -> pd.DataFrame:
-    data = (
+    s = (
         df["username"]
         .astype(str)
         .value_counts()
         .head(n)
-        .reset_index()
     )
 
-    data.columns = ["Username", "Attempts"]
-    return data
+    return s.rename_axis("Username").reset_index(name="Attempts")
 
 
 def _top_passwords(df: pd.DataFrame, n: int = TOP_N) -> pd.DataFrame:
-    data = (
+    s = (
         df["password"]
         .astype(str)
         .value_counts()
         .head(n)
-        .reset_index()
     )
 
-    data.columns = ["Password", "Attempts"]
-    return data
+    return s.rename_axis("Password").reset_index(name="Attempts")
 
 
 def _top_username_password_combinations(df: pd.DataFrame, n: int = TOP_N) -> pd.DataFrame:
@@ -46,12 +42,23 @@ def _top_username_password_combinations(df: pd.DataFrame, n: int = TOP_N) -> pd.
 
 
 def _create_horizontal_bar_chart(df_datos, x, y, titulo, paleta) -> px.Figure:
+    df_datos = df_datos.copy()
+
+    df_datos[y] = df_datos[y].astype(str)  # 👈 CLAVE
+
     fig = px.bar(
-        df_datos, x=x, y=y, orientation="h",
-        title=titulo, color=x, color_continuous_scale=paleta,
+        df_datos,
+        x=x,
+        y=y,
+        orientation="h",
+        title=titulo,
+        color=x,
+        color_continuous_scale=paleta,
     )
+
     apply_base_layout(fig, margin=dict(l=0, r=0, t=40, b=0))
     apply_yaxis_reversed(fig)
+
     return fig
 
 
