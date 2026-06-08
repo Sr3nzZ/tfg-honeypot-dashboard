@@ -13,12 +13,12 @@ def _attacks_by_hour(df: pd.DataFrame) -> pd.DataFrame:
  
  
 def _attacks_by_day_hour_honeypot(df: pd.DataFrame) -> pd.DataFrame:
+    df = df.copy()
+    df["day_hour"] = df["timestamp"].dt.floor("h")
     return (
-        df.assign(
-            day_hour=df["timestamp"].dt.strftime("%m-%d %H:00")
-        )
-        .groupby(["day_hour", "honeypot"]).size()
+        df.groupby(["day_hour", "honeypot"]).size()
         .reset_index(name="attacks")
+        .sort_values("day_hour")
     )
  
 def _create_hourly_attacks_chart(df_hora: pd.DataFrame) -> px.Figure:
