@@ -7,9 +7,15 @@ TOOLS = ["p0f", "suricata", "fatt", "nginx"]
  
  
 def _attacks_by_hour(df: pd.DataFrame) -> pd.DataFrame:
+    df = df.copy()
+
+    df["timestamp"] = pd.to_datetime(df["timestamp"], utc=True)
+
+    df["day_hour"] = df["timestamp"].dt.floor("h")
+
     return (
-        df.assign(hour=df["timestamp"].dt.hour)
-        .groupby("hour").size()
+        df.groupby("day_hour")
+        .size()
         .reset_index(name="attacks")
     )
  
