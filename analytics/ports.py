@@ -29,7 +29,7 @@ def _attacks_by_honeypot(df: pd.DataFrame) -> pd.DataFrame:
 
 def _create_ports_chart(df_puertos: pd.DataFrame) -> px.Figure:
     fig = px.pie(
-        df_ports,
+        df_puertos,
         names="Service",
         values="Attacks",
         title=f"Top {TOP_N} most attacked ports",
