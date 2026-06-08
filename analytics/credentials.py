@@ -1,7 +1,13 @@
 import pandas as pd
 import plotly.express as px
 from config.settings import TOP_N
-from ui.styles import apply_base_layout, apply_yaxis_reversed, PALETTE_SEQUENTIAL_PURPLE, PALETTE_SEQUENTIAL_RED, PALETTE_SEQUENTIAL_ORANGE
+from ui.styles import (
+    apply_base_layout,
+    apply_yaxis_reversed,
+    PALETTE_SEQUENTIAL_PURPLE,
+    PALETTE_SEQUENTIAL_RED,
+    PALETTE_SEQUENTIAL_ORANGE
+)
 from ui import components as ui
 
 
@@ -16,7 +22,6 @@ def _top_usernames(df: pd.DataFrame, n: int = TOP_N) -> pd.DataFrame:
         .value_counts()
         .head(n)
     )
-
     return s.rename_axis("Username").reset_index(name="Attempts")
 
 
@@ -27,7 +32,6 @@ def _top_passwords(df: pd.DataFrame, n: int = TOP_N) -> pd.DataFrame:
         .value_counts()
         .head(n)
     )
-
     return s.rename_axis("Password").reset_index(name="Attempts")
 
 
@@ -35,7 +39,8 @@ def _top_username_password_combinations(df: pd.DataFrame, n: int = TOP_N) -> pd.
     datos = (
         df.groupby(["username", "password"]).size()
         .reset_index(name="Attempts")
-        .sort_values("Attempts", ascending=False).head(n)
+        .sort_values("Attempts", ascending=False)
+        .head(n)
     )
     datos["Combination"] = datos["username"] + " / " + datos["password"]
     return datos
@@ -44,7 +49,7 @@ def _top_username_password_combinations(df: pd.DataFrame, n: int = TOP_N) -> pd.
 def _create_horizontal_bar_chart(df_datos, x, y, titulo, paleta) -> px.Figure:
     df_datos = df_datos.copy()
 
-    df_datos[y] = df_datos[y].astype("category")
+    df_datos[y] = df_datos[y].astype(str)
 
     fig = px.bar(
         df_datos,
@@ -52,8 +57,11 @@ def _create_horizontal_bar_chart(df_datos, x, y, titulo, paleta) -> px.Figure:
         y=y,
         orientation="h",
         title=titulo,
-        color=x,
+        color=x,  # si quieres quitar problemas visuales, puedes eliminar esta línea
         color_continuous_scale=paleta,
+    )
+    fig.update_layout(
+        yaxis=dict(type="category")
     )
 
     apply_base_layout(fig, margin=dict(l=0, r=0, t=40, b=0))
@@ -64,16 +72,49 @@ def _create_horizontal_bar_chart(df_datos, x, y, titulo, paleta) -> px.Figure:
 
 def render(df: pd.DataFrame) -> None:
     ui.section("🔐 SSH credentials captured")
+
     df_cowrie = _filter_cowrie(df)
     if df_cowrie.empty:
         ui.no_data("Cowrie")
         ui.separator()
         return
+
     col_user, col_pass, col_combo = ui.columns(1, 1, 1)
+
     with col_user:
-        ui.plot(_create_horizontal_bar_chart(_top_usernames(df_cowrie), "Attempts", "Username", "Top usernames", PALETTE_SEQUENTIAL_PURPLE), key="creds_users")
+        ui.plot(
+            _create_horizontal_bar_chart(
+                _top_usernames(df_cowrie),
+                "Attempts",
+                "Username",
+                "Top usernames",
+                PALETTE_SEQUENTIAL_PURPLE
+            ),
+            key="creds_users"
+        )
+
     with col_pass:
-        ui.plot(_create_horizontal_bar_chart(_top_passwords(df_cowrie), "Attempts", "Password", "Top passwords", PALETTE_SEQUENTIAL_RED), key="creds_pass")
+        ui.plot(
+            _create_horizontal_bar_chart(
+                _top_passwords(df_cowrie),
+                "Attempts",
+                "Password",
+                "Top passwords",
+                PALETTE_SEQUENTIAL_RED
+            ),
+            key="creds_pass"
+        )
+
     with col_combo:
-        ui.plot(_create_horizontal_bar_chart(_top_username_password_combinations(df_cowrie), "Attempts", "Combination", "Top combinations", PALETTE_SEQUENTIAL_ORANGE), key="creds_combo")
+        ui.plot(
+            _create_horizontal_bar_chart(
+                _top_username_password_combinations(df_cowrie),
+                "Attempts",
+                "Combination",
+                "Top combinations",
+                PALETTE_SEQUENTIAL_ORANGE
+            ),
+            key="creds_combo"
+        )
+
     ui.separator()
