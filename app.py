@@ -9,11 +9,21 @@ layout.configure_page()
 T_INICIO          = pd.Timestamp("2026-05-27T18:55:02Z", tz="UTC")
 T_FIN             = pd.Timestamp("2026-06-04T23:59:59Z", tz="UTC")
 RANGO_SEG         = (T_FIN - T_INICIO).total_seconds()
-DURACION_REAL_SEG = 30 * 60               # 30 minutos reales
-VENTANA_DATOS     = pd.Timedelta(hours=1) # avanzar 1h de datos por tick
-# Cuántos segundos reales corresponden a 1h de datos
+DURACION_REAL_SEG = 30 * 60
+VENTANA_DATOS     = pd.Timedelta(hours=1)
 TICK_REAL_SEG     = max(1, int(VENTANA_DATOS.total_seconds() / (RANGO_SEG / DURACION_REAL_SEG)))
  
+# ── Inicializar estado ────────────────────────────────────────────────────────
+for key, default in [
+    ("running",      False),
+    ("t_cursor",     T_INICIO),
+    ("df_acumulado", pd.DataFrame()),
+    ("ultimo_tick",  None),
+]:
+    if key not in st.session_state:
+        st.session_state[key] = default
+ 
+# ── Sidebar (no se recarga) ───────────────────────────────────────────────────
 with st.sidebar:
     st.title("Honeypot Dashboard")
     st.caption("Real-time threat analysis")
@@ -44,74 +54,68 @@ with st.sidebar:
         if st.button("⏹ Stop", use_container_width=True):
             st.session_state["running"] = False
  
-for key, default in [
-    ("running",      False),
-    ("t_cursor",     T_INICIO),
-    ("df_acumulado", pd.DataFrame()),
-    ("ultimo_tick",  None),
-]:
-    if key not in st.session_state:
-        st.session_state[key] = default
+# ── Fragment: solo esta parte se recarga ─────────────────────────────────────
+@st.fragment(run_every=TICK_REAL_SEG if st.session_state["running"] else None)
+def dashboard():
+    # Cargar siguiente ventana si toca
+    if st.session_state["running"] and st.session_state["ultimo_tick"]:
+        ahora = time.time()
+        if ahora - st.session_state["ultimo_tick"] >= TICK_REAL_SEG:
+            t_cursor = st.session_state["t_cursor"]
+            hasta    = min(t_cursor + VENTANA_DATOS, T_FIN)
  
-if st.session_state["running"] and st.session_state["ultimo_tick"]:
-    ahora = time.time()
-    if ahora - st.session_state["ultimo_tick"] >= TICK_REAL_SEG:
-        t_cursor = st.session_state["t_cursor"]
-        hasta    = min(t_cursor + VENTANA_DATOS, T_FIN)
+            with st.spinner(f"Loading {t_cursor.strftime('%b %d %H:%M')} – {hasta.strftime('%b %d %H:%M')}..."):
+                nuevos = data.load_window(
+                    desde=t_cursor.isoformat(),
+                    hasta=hasta.isoformat(),
+                )
  
-        with st.spinner(f"Loading {t_cursor.strftime('%b %d %H:%M')} – {hasta.strftime('%b %d %H:%M')}..."):
-            nuevos = data.load_window(
-                desde=t_cursor.isoformat(),
-                hasta=hasta.isoformat(),
-            )
+            if not nuevos.empty:
+                st.session_state["df_acumulado"] = pd.concat(
+                    [st.session_state["df_acumulado"], nuevos],
+                    ignore_index=True
+                )
  
-        if not nuevos.empty:
-            st.session_state["df_acumulado"] = pd.concat(
-                [st.session_state["df_acumulado"], nuevos],
-                ignore_index=True
-            )
+            st.session_state["t_cursor"]    = hasta
+            st.session_state["ultimo_tick"] = ahora
  
-        st.session_state["t_cursor"]    = hasta
-        st.session_state["ultimo_tick"] = ahora
+            if hasta >= T_FIN:
+                st.session_state["running"] = False
+                st.success("✅ Simulation complete — all attacks replayed.")
  
-        if hasta >= T_FIN:
-            st.session_state["running"] = False
-            st.success("✅ Simulation complete — all attacks replayed.")
+    t_cursor = st.session_state["t_cursor"]
+    df = st.session_state["df_acumulado"].copy()
+    if honeypot_sel != "All" and not df.empty:
+        df = data.filter_honeypot(df, honeypot_sel)
  
-t_cursor = st.session_state["t_cursor"]
-df = st.session_state["df_acumulado"].copy()
-if honeypot_sel != "All" and not df.empty:
-    df = data.filter_honeypot(df, honeypot_sel)
+    # Cabecera
+    st.title("Honeypot Dashboard")
+    col_info, col_prog = st.columns([3, 1])
+    with col_info:
+        st.caption(f"{len(df):,} events · simulating up to {t_cursor.strftime('%Y-%m-%d %H:%M UTC')}")
+    with col_prog:
+        pct = int((t_cursor - T_INICIO).total_seconds() / RANGO_SEG * 100)
+        st.progress(min(pct, 100), text=f"{min(pct, 100)}%")
+    st.divider()
  
-st.title("Honeypot Dashboard")
-col_info, col_prog = st.columns([3, 1])
-with col_info:
-    st.caption(f"{len(df):,} events · simulating up to {t_cursor.strftime('%Y-%m-%d %H:%M UTC')}")
-with col_prog:
-    pct = int((t_cursor - T_INICIO).total_seconds() / RANGO_SEG * 100)
-    st.progress(min(pct, 100), text=f"{min(pct, 100)}%")
-st.divider()
+    if df.empty:
+        st.info("Press ▶ Start to begin the simulation.")
+    else:
+        metrics.render(df)
+        geo.render(df)
+        temporal.render(df)
+        ports.render(df)
+        credentials.render(df)
+        suricata.render(df)
  
-if df.empty:
-    st.info("Press ▶ Start to begin the simulation.")
-else:
-    metrics.render(df)
-    geo.render(df)
-    temporal.render(df)
-    ports.render(df)
-    credentials.render(df)
-    suricata.render(df)
+        with st.expander("Last 100 recorded events", expanded=False):
+            cols_dataframe = [c for c in [
+                "timestamp", "honeypot", "src_ip", "dst_port",
+                "country", "username", "password", "alert_signature"
+            ] if c in df.columns]
+            from ui.components import dataframe
+            dataframe(df[cols_dataframe].tail(100).reset_index(drop=True), key="raw_events")
  
-    with st.expander("Last 100 recorded events", expanded=False):
-        cols_dataframe = [c for c in [
-            "timestamp", "honeypot", "src_ip", "dst_port",
-            "country", "username", "password", "alert_signature"
-        ] if c in df.columns]
-        from ui.components import dataframe
-        dataframe(df[cols_dataframe].tail(100).reset_index(drop=True), key="raw_events")
+    layout.footer("Honeypot Dashboard · TFG · Data May 27 – Jun 3, 2026 · Designed for real-time updates via EC2 exporter")
  
-layout.footer("Honeypot Dashboard · TFG · Data May 27 – Jun 3, 2026 · Designed for real-time updates via EC2 exporter")
- 
-if st.session_state["running"]:
-    time.sleep(1)
-    st.rerun()
+dashboard()
