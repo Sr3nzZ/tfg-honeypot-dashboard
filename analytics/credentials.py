@@ -1,4 +1,3 @@
-# analytics/credentials.py
 import pandas as pd
 import plotly.express as px
 from config.settings import TOP_N

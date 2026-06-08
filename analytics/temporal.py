@@ -1,4 +1,3 @@
-# analytics/temporal.py
 import pandas as pd
 import plotly.express as px
 from ui.styles import apply_base_layout, PALETTE_CATEGORICAL, PALETTE_SEQUENTIAL_ORANGE
