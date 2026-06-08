@@ -13,11 +13,11 @@ def columns(*ratios: int):
 
 
 def plot(fig: go.Figure, key: str | None = None) -> None:
-    st.plotly_chart(fig, use_container_width=True, key=key)
+    st.plotly_chart(fig, width=True, key=key)
 
 
 def dataframe(df: Any, key: str | None = None) -> None:
-    st.dataframe(df, use_container_width=True, hide_index=True, key=key)
+    st.dataframe(df, width=True, hide_index=True, key=key)
 
 
 def no_data(section: str) -> None:

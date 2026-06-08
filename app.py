@@ -35,13 +35,13 @@ with st.sidebar:
  
     col_start, col_stop = st.columns(2)
     with col_start:
-        if st.button("▶ Start", use_container_width=True):
+        if st.button("▶ Start", width=True):
             st.session_state["running"]      = True
             st.session_state["t_cursor"]     = T_INICIO
             st.session_state["df_acumulado"] = pd.DataFrame()
             st.session_state["ultimo_tick"]  = time.time()
     with col_stop:
-        if st.button("⏹ Stop", use_container_width=True):
+        if st.button("⏹ Stop", width=True):
             st.session_state["running"] = False
  
 for key, default in [
