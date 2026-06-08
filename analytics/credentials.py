@@ -44,7 +44,7 @@ def _top_username_password_combinations(df: pd.DataFrame, n: int = TOP_N) -> pd.
 def _create_horizontal_bar_chart(df_datos, x, y, titulo, paleta) -> px.Figure:
     df_datos = df_datos.copy()
 
-    df_datos[y] = df_datos[y].astype(str)  # 👈 CLAVE
+    df_datos[y] = df_datos[y].astype("category")
 
     fig = px.bar(
         df_datos,
