@@ -56,7 +56,7 @@ def render(df: pd.DataFrame) -> None:
         ui.sin_datos("Suricata")
         ui.separador()
         return
-    col_firmas, col_sev = ui.fila_columnas(2, 1)
+    col_firmas, col_sev = ui.columns(2, 1)
     with col_firmas:
         ui.grafico(_create_signatures_chart(_top_alert_signatures(df_suri)), key="suri_firmas")
     with col_sev:

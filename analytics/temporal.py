@@ -46,7 +46,7 @@ def _create_daily_attacks_chart(df_dia: pd.DataFrame) -> px.Figure:
 
 def render(df: pd.DataFrame) -> None:
     ui.section("Temporal analysis")
-    col_hora, col_dia = ui.fila_columnas(1, 1)
+    col_hora, col_dia = ui.columns(1, 1)
     with col_hora:
         ui.grafico(_create_hourly_attacks_chart(_attacks_by_hour(df)), key="temp_hora")
     with col_dia:

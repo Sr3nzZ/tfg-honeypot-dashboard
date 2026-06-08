@@ -50,14 +50,14 @@ def render(df: pd.DataFrame) -> None:
     ui.section("🔐 SSH credentials captured (Cowrie)")
     df_cowrie = _filter_cowrie(df)
     if df_cowrie.empty:
-        ui.sin_datos("Cowrie")
-        ui.separador()
+        ui.no_data("Cowrie")
+        ui.separator()
         return
-    col_user, col_pass, col_combo = ui.fila_columnas(1, 1, 1)
+    col_user, col_pass, col_combo = ui.columns(1, 1, 1)
     with col_user:
         ui.grafico(_create_horizontal_bar_chart(_top_usernames(df_cowrie), "Attempts", "Username", "Top usernames", PALETTE_SEQUENTIAL_PURPLE), key="creds_users")
     with col_pass:
         ui.grafico(_create_horizontal_bar_chart(_top_passwords(df_cowrie), "Attempts", "Password", "Top passwords", PALETTE_SEQUENTIAL_RED), key="creds_pass")
     with col_combo:
         ui.grafico(_create_horizontal_bar_chart(_top_username_password_combinations(df_cowrie), "Attempts", "Combination", "Top combinations", PALETTE_SEQUENTIAL_ORANGE), key="creds_combo")
-    ui.separador()
+    ui.separator()
