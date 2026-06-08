@@ -34,7 +34,7 @@ def _create_ports_chart(df_puertos: pd.DataFrame) -> px.Figure:
         values="Attacks",
         title=f"Top {TOP_N} most attacked ports",
         color_discrete_sequence=PALETTE_CATEGORICAL,
-        hole=0.4,  # opcional (donut style)
+        hole=0.4,
     )
 
     apply_base_layout(fig, legend=dict(orientation="h", y=-0.1))
