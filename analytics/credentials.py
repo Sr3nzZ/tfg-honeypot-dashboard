@@ -10,19 +10,29 @@ def _filter_cowrie(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def _top_usernames(df: pd.DataFrame, n: int = TOP_N) -> pd.DataFrame:
-    return (
-        df["username"].astype(str).value_counts().head(n)
+    data = (
+        df["username"]
+        .astype(str)
+        .value_counts()
+        .head(n)
         .reset_index()
-        .rename(columns={"index": "Username", "username": "Attempts"})
     )
+
+    data.columns = ["Username", "Attempts"]
+    return data
 
 
 def _top_passwords(df: pd.DataFrame, n: int = TOP_N) -> pd.DataFrame:
-    return (
-        df["password"].astype(str).value_counts().head(n)
+    data = (
+        df["password"]
+        .astype(str)
+        .value_counts()
+        .head(n)
         .reset_index()
-        .rename(columns={"index": "Password", "password": "Attempts"})
     )
+
+    data.columns = ["Password", "Attempts"]
+    return data
 
 
 def _top_username_password_combinations(df: pd.DataFrame, n: int = TOP_N) -> pd.DataFrame:
