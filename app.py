@@ -43,6 +43,12 @@ with st.sidebar:
          "adbhoney", "ciscoasa", "conpot", "mailoney",
          "redishoneypot", "honeyaml", "elasticpot", "heralding"]
     )
+
+    country_sel = st.selectbox(
+        "Country selector",
+        options=["All"],
+        key="country_sel"
+    )
  
     col_start, col_stop = st.columns(2)
     with col_start:
@@ -87,8 +93,19 @@ def dashboard():
     if honeypot_sel != "All" and not df.empty:
         df = data.filter_honeypot(df, honeypot_sel)
  
+    if not df.empty and "country" in df.columns:
+        countries = ["All"] + sorted(df["country"].dropna().unique().tolist())
 
-
+        st.sidebar.selectbox(
+            "Country selector",
+            options=countries,
+            index=countries.index(st.session_state["country_sel"])
+            if st.session_state["country_sel"] in countries else 0,
+            key="country_sel"
+        )
+        
+    if st.session_state["country_sel"] != "All" and not df.empty:
+        df = df[df["country"] == st.session_state["country_sel"]]
 
     st.title("Honeypot Dashboard")
     col_info, col_prog = st.columns([3, 1])
