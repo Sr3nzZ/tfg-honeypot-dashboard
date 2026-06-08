@@ -12,7 +12,7 @@ if df_raw.empty:
     st.warning("No data available. Make sure exportar.py is running on the EC2 instance.")
     st.stop()
 
-df = data.filtrar_honeypot(df_raw, honeypot_sel)
+df = data.filter_honeypot(df_raw, honeypot_sel)
 
 layout.render_header(len(df), dias)
 
