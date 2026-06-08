@@ -47,11 +47,20 @@ def _create_horizontal_bar_chart(df_datos, x, y, titulo, paleta) -> px.Figure:
     return fig
 
 def _create_wordcloud(series: pd.Series, title: str):
-    text = " ".join(series.dropna().astype(str))
+    series = series.dropna().astype(str)
 
-    if not text.strip():
-        fig, ax = plt.subplots()
-        ax.text(0.5, 0.5, "No data available", ha="center", va="center")
+    # contar frecuencias reales
+    freq = series.value_counts().to_dict()
+
+    fig, ax = plt.subplots()
+
+    if not freq:
+        ax.text(
+            0.5, 0.5,
+            "No data available",
+            ha="center",
+            va="center"
+        )
         ax.axis("off")
         ax.set_title(title)
         return fig
@@ -61,9 +70,8 @@ def _create_wordcloud(series: pd.Series, title: str):
         height=400,
         background_color="white",
         colormap="Reds"
-    ).generate(text)
+    ).generate_from_frequencies(freq)
 
-    fig, ax = plt.subplots()
     ax.imshow(wc, interpolation="bilinear")
     ax.axis("off")
     ax.set_title(title)
