@@ -51,7 +51,7 @@ def _create_honeypot_chart(df_honey: pd.DataFrame) -> px.Figure:
 
 
 def render(df: pd.DataFrame) -> None:
-    ui.seccion("🔌 Ports and protocols")
+    ui.section("🔌 Ports and protocols")
     col_puertos, col_honey = ui.fila_columnas(1, 1)
     with col_puertos:
         ui.grafico(_create_ports_chart(_top_ports(df)), key="ports_top")

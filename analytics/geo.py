@@ -50,7 +50,7 @@ def _create_country_bar_chart(df_paises: pd.DataFrame) -> px.Figure:
 
 
 def render(df: pd.DataFrame) -> None:
-    ui.seccion("🌍 Geographic origin of attacks")
+    ui.section("🌍 Geographic origin of attacks")
     col_mapa, col_paises = ui.fila_columnas(2, 1)
     with col_mapa:
         datos = _prepare_geo_data(df)

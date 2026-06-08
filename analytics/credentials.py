@@ -47,7 +47,7 @@ def _create_horizontal_bar_chart(df_datos, x, y, titulo, paleta) -> px.Figure:
 
 
 def render(df: pd.DataFrame) -> None:
-    ui.seccion("🔐 SSH credentials captured (Cowrie)")
+    ui.section("🔐 SSH credentials captured (Cowrie)")
     df_cowrie = _filter_cowrie(df)
     if df_cowrie.empty:
         ui.sin_datos("Cowrie")

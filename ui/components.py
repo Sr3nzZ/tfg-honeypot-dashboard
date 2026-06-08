@@ -20,8 +20,8 @@ def dataframe(df: Any, key: str | None = None) -> None:
     st.dataframe(df, use_container_width=True, hide_index=True, key=key)
 
 
-def no_data(seccion: str) -> None:
-    st.info(f"No data available for {seccion} in the selected range.")
+def no_data(section: str) -> None:
+    st.info(f"No data available for {section} in the selected range.")
 
 
 def separator() -> None:
