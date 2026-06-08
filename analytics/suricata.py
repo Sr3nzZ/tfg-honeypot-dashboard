@@ -49,7 +49,7 @@ def _create_severity_chart(df_sev: pd.DataFrame) -> px.Figure:
 
 
 def render(df: pd.DataFrame) -> None:
-    ui.section("🚨 IDS Alerts — Suricata")
+    ui.section("IDS Alerts — Suricata")
     df_suri = _filter_suricata(df)
     if df_suri.empty:
         ui.no_data("Suricata")
