@@ -57,7 +57,7 @@ def render(df: pd.DataFrame) -> None:
         if not datos.empty:
             ui.grafico(_create_geo_map(datos), key="geo_mapa")
         else:
-            ui.sin_datos("geolocation")
+            ui.no_data("geolocation")
     with col_paises:
         ui.grafico(_create_country_bar_chart(_top_countries(df)), key="geo_paises")
     ui.separador()

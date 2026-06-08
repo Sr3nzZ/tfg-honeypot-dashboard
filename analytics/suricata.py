@@ -53,7 +53,7 @@ def render(df: pd.DataFrame) -> None:
     ui.section("🚨 IDS Alerts — Suricata")
     df_suri = _filter_suricata(df)
     if df_suri.empty:
-        ui.sin_datos("Suricata")
+        ui.no_data("Suricata")
         ui.separador()
         return
     col_firmas, col_sev = ui.columns(2, 1)
