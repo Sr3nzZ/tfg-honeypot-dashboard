@@ -14,14 +14,31 @@ VENTANA_DATOS     = pd.Timedelta(hours=1)
 TICK_REAL_SEG     = max(1, int(VENTANA_DATOS.total_seconds() / (RANGO_SEG / DURACION_REAL_SEG)))
  
 for key, default in [
-    ("running",      False),
-    ("t_cursor",     T_INICIO),
+    ("running", False),
+    ("t_cursor", T_INICIO),
     ("df_acumulado", pd.DataFrame()),
-    ("ultimo_tick",  None),
+    ("ultimo_tick", None),
+    ("country_sel", "All"),
+    ("country_options", ["All"]),
 ]:
     if key not in st.session_state:
         st.session_state[key] = default
- 
+
+df_preview = st.session_state["df_acumulado"].copy()
+
+honeypot_sel_preview = st.session_state.get("honeypot_sel", "All")
+
+if honeypot_sel_preview != "All" and not df_preview.empty:
+    df_preview = data.filter_honeypot(df_preview, honeypot_sel_preview)
+
+if not df_preview.empty and "country" in df_preview.columns:
+    st.session_state["country_options"] = (
+        ["All"] + sorted(df_preview["country"].dropna().unique().tolist())
+    )
+else:
+    st.session_state["country_options"] = ["All"]
+
+    
 with st.sidebar:
     st.title("Honeypot Dashboard")
     st.caption("Real-time threat analysis")
@@ -88,14 +105,11 @@ def dashboard():
                 st.session_state["running"] = False
                 st.success("Simulation complete — all attacks replayed.")
  
-    t_cursor = st.session_state["t_cursor"]
     df = st.session_state["df_acumulado"].copy()
+    t_cursor = st.session_state["t_cursor"]
+
     if honeypot_sel != "All" and not df.empty:
         df = data.filter_honeypot(df, honeypot_sel)
- 
-    if not df.empty and "country" in df.columns:
-        countries = ["All"] + sorted(df["country"].dropna().unique().tolist())
-        st.session_state["country_options"] = countries
         
     if st.session_state["country_sel"] != "All" and not df.empty:
         df = df[df["country"] == st.session_state["country_sel"]]
