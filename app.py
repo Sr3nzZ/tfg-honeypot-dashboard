@@ -70,6 +70,8 @@ if st.session_state["running"] and t_cursor > ultima:
         desde=ultima.isoformat(),
         hasta=t_cursor.isoformat(),
     )
+    st.write(f"DEBUG: desde={ultima} hasta={t_cursor} nuevos={len(nuevos)}")
+
     if not nuevos.empty:
         st.session_state["df_acumulado"] = pd.concat(
             [st.session_state["df_acumulado"], nuevos],
