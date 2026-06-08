@@ -6,14 +6,14 @@ from analytics import data, metrics, geo, temporal, ports, credentials, suricata
  
 layout.configure_page()
  
-T_INICIO          = pd.Timestamp("2026-05-27T18:55:02Z", tz="UTC")
+#T_INICIO          = pd.Timestamp("2026-05-27T18:55:02Z", tz="UTC")
+T_INICIO          = pd.Timestamp("2026-05-28T12:55:02Z", tz="UTC")
 T_FIN             = pd.Timestamp("2026-06-04T23:59:59Z", tz="UTC")
 RANGO_SEG         = (T_FIN - T_INICIO).total_seconds()
 DURACION_REAL_SEG = 30 * 60
 VENTANA_DATOS     = pd.Timedelta(hours=1)
 TICK_REAL_SEG     = max(1, int(VENTANA_DATOS.total_seconds() / (RANGO_SEG / DURACION_REAL_SEG)))
  
-# ── Inicializar estado ────────────────────────────────────────────────────────
 for key, default in [
     ("running",      False),
     ("t_cursor",     T_INICIO),
@@ -23,7 +23,6 @@ for key, default in [
     if key not in st.session_state:
         st.session_state[key] = default
  
-# ── Sidebar (no se recarga) ───────────────────────────────────────────────────
 with st.sidebar:
     st.title("Honeypot Dashboard")
     st.caption("Real-time threat analysis")
