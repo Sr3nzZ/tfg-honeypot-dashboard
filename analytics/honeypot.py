@@ -67,32 +67,33 @@ def _create_pie_chart(df: pd.DataFrame, title: str):
 def render(df: pd.DataFrame) -> None:
     ui.section("Tools & Honeypot distribution")
 
-    df_filtered = _filter_honeypots(df)
-
-    if df_filtered.empty:
+    if df.empty:
         ui.no_data("Honeypots")
         ui.separator()
         return
 
     df_honeypots = _filter_honeypots(df)
-
-    if not df_honeypots.empty:
-        df_chart_hp = _distribution(df_honeypots, "honeypot")
-        df_chart_hp = _group_small_categories(df_chart_hp)
-
-        ui.plot(
-            _create_pie_chart(df_chart_hp, "Attacks by Honeypot"),
-            key="honeypot_pie"
-        )
-
     df_tools = _filter_tools(df)
 
-    if not df_tools.empty:
-        df_chart_tools = _distribution(df_tools, "honeypot")
+    col1, col2 = ui.columns(1, 1)
 
-        ui.plot(
-            _create_pie_chart(df_chart_tools, "Tools activity distribution"),
-            key="tools_pie"
-        )
+    with col1:
+        if not df_honeypots.empty:
+            df_chart_hp = _distribution(df_honeypots, "honeypot")
+            df_chart_hp = _group_small_categories(df_chart_hp)
+
+            ui.plot(
+                _create_pie_chart(df_chart_hp, "Attacks by Honeypot"),
+                key="honeypot_pie"
+            )
+
+    with col2:
+        if not df_tools.empty:
+            df_chart_tools = _distribution(df_tools, "honeypot")
+
+            ui.plot(
+                _create_pie_chart(df_chart_tools, "Tools activity distribution"),
+                key="tools_pie"
+            )
 
     ui.separator()
