@@ -1,7 +1,7 @@
 # ui/layout.py
 import streamlit as st
 from datetime import datetime
-from config.settings import APP_TITLE, RANGOS_TIEMPO, HONEYPOTS
+from config.settings import APP_TITLE, TIME_RANGE, HONEYPOTS
 from ui.styles import CSS
 
 
@@ -21,8 +21,8 @@ def render_sidebar() -> tuple[int, str]:
 
         dias = st.selectbox(
             "Time range",
-            options=list(RANGOS_TIEMPO.keys()),
-            format_func=lambda x: RANGOS_TIEMPO[x],
+            options=list(TIME_RANGE.keys()),
+            format_func=lambda x: TIME_RANGE[x],
             index=2,
         )
 
@@ -39,7 +39,7 @@ def render_sidebar() -> tuple[int, str]:
 
 
 def render_header(total_eventos: int, dias: int) -> None:
-    rango_texto = RANGOS_TIEMPO.get(dias, f"{dias} days").lower()
+    rango_texto = TIME_RANGE.get(dias, f"{dias} days").lower()
     st.title("Honeypot Dashboard")
     st.caption(f"{rango_texto} · {total_eventos:,} events")
     st.divider()
