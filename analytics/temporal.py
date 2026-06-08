@@ -41,7 +41,10 @@ def _create_day_hour_honeypot_chart(df_data: pd.DataFrame) -> px.Figure:
         markers=False, color_discrete_sequence=PALETTE_CATEGORICAL,
     )
     apply_base_layout(fig, legend=dict(orientation="h", y=-0.25))
-    fig.update_layout(xaxis=dict(tickangle=-45, nticks=24))
+    fig.update_layout(
+        xaxis=dict(tickangle=-45, nticks=24),
+        yaxis_type="log"
+    )
     return fig
  
  
