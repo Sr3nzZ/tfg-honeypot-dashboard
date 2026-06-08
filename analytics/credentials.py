@@ -84,24 +84,27 @@ def render(df: pd.DataFrame) -> None:
         ui.no_data("Cowrie")
         ui.separator()
         return
+    user_series = _top_user_series(df_cowrie)
+    pass_series = _top_password_series(df_cowrie)
+
     col_user, col_pass, col_combo = ui.columns(1, 1, 1)
     with col_user:
-        ui.plot(
-            _create_wordcloud(
-                _top_user_series(df_cowrie),
-                "Usernames WordCloud"
-            ),
-            key="creds_users_wc"
-        )
+        if user_series.empty:
+            ui.no_data("Usernames")
+        else:
+            ui.plot(
+                _create_wordcloud(user_series, "Usernames WordCloud"),
+                key="creds_users_wc"
+            )
 
     with col_pass:
-        ui.plot(
-            _create_wordcloud(
-                _top_password_series(df_cowrie),
-                "Passwords WordCloud"
-            ),
-            key="creds_pass_wc"
-        )
+        if pass_series.empty:
+            ui.no_data("Passwords")
+        else:
+            ui.plot(
+                _create_wordcloud(pass_series, "Passwords WordCloud"),
+                key="creds_pass_wc"
+            )
     with col_combo:
         ui.plot(_create_horizontal_bar_chart(_top_username_password_combinations(df_cowrie), "Attempts", "Combination", "Top combinations", PALETTE_SEQUENTIAL_ORANGE), key="creds_combo")
     ui.separator()
