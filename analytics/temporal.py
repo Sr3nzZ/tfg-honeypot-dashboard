@@ -3,6 +3,8 @@ import plotly.express as px
 from ui.styles import apply_base_layout, PALETTE_CATEGORICAL, PALETTE_SEQUENTIAL_ORANGE
 from ui import components as ui
  
+TOOLS = ["p0f", "suricata", "fatt", "nginx"]
+ 
  
 def _attacks_by_hour(df: pd.DataFrame) -> pd.DataFrame:
     return (
@@ -12,14 +14,19 @@ def _attacks_by_hour(df: pd.DataFrame) -> pd.DataFrame:
     )
  
  
-def _attacks_by_day_hour_honeypot(df: pd.DataFrame) -> pd.DataFrame:
+def _attacks_by_day_hour_honeypot(df: pd.DataFrame, tools: bool = False) -> pd.DataFrame:
     df = df.copy()
+    if tools:
+        df = df[df["honeypot"].isin(TOOLS)]
+    else:
+        df = df[~df["honeypot"].isin(TOOLS)]
     df["day_hour"] = df["timestamp"].dt.floor("h")
     return (
         df.groupby(["day_hour", "honeypot"]).size()
         .reset_index(name="attacks")
         .sort_values(["honeypot", "day_hour"])
     )
+ 
  
 def _create_hourly_attacks_chart(df_hora: pd.DataFrame) -> px.Figure:
     fig = px.bar(
@@ -33,10 +40,10 @@ def _create_hourly_attacks_chart(df_hora: pd.DataFrame) -> px.Figure:
     return fig
  
  
-def _create_day_hour_honeypot_chart(df_data: pd.DataFrame) -> px.Figure:
+def _create_day_hour_honeypot_chart(df_data: pd.DataFrame, title: str) -> px.Figure:
     fig = px.line(
         df_data, x="day_hour", y="attacks", color="honeypot",
-        title="Attacks by day and hour per honeypot",
+        title=title,
         labels={"day_hour": "Day & Hour", "attacks": "Attacks", "honeypot": "Honeypot"},
         markers=False, color_discrete_sequence=PALETTE_CATEGORICAL,
     )
@@ -50,9 +57,22 @@ def _create_day_hour_honeypot_chart(df_data: pd.DataFrame) -> px.Figure:
  
 def render(df: pd.DataFrame) -> None:
     ui.section("Temporal analysis")
-    col_hora, col_dia = ui.columns(1, 1)
+ 
+    col_hora, col_tools, col_honeypots = ui.columns(1, 1, 1)
+ 
     with col_hora:
         ui.plot(_create_hourly_attacks_chart(_attacks_by_hour(df)), key="temp_hora")
-    with col_dia:
-        ui.plot(_create_day_hour_honeypot_chart(_attacks_by_day_hour_honeypot(df)), key="temp_day_hour_honeypot")
+ 
+    with col_tools:
+        ui.plot(_create_day_hour_honeypot_chart(
+            _attacks_by_day_hour_honeypot(df, tools=True),
+            "Tools activity by day and hour"
+        ), key="temp_tools")
+ 
+    with col_honeypots:
+        ui.plot(_create_day_hour_honeypot_chart(
+            _attacks_by_day_hour_honeypot(df, tools=False),
+            "Honeypots activity by day and hour"
+        ), key="temp_honeypots")
+ 
     ui.separator()
