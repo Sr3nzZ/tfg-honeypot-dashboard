@@ -24,6 +24,7 @@ def load_data(dias: int) -> pd.DataFrame:
         .select("*")
         .gte("timestamp", desde)
         .order("timestamp", desc=True)
+        .limit(50000)
         .execute()
     )
 
