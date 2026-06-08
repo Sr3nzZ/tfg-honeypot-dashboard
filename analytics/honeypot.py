@@ -85,8 +85,6 @@ def render(df: pd.DataFrame) -> None:
             key="honeypot_pie"
         )
 
-    ui.separator()
-
     df_tools = _filter_tools(df)
 
     if not df_tools.empty:
