@@ -13,26 +13,32 @@ def _get_client():
  
  
 def load_window(desde: str, hasta: str) -> pd.DataFrame:
-    """
-    Carga solo los eventos entre dos timestamps.
-    Se llama incrementalmente desde el live mode.
-    """
     sb = _get_client()
+    todos = []
+    page = 0
+    page_size = 1000
  
-    res = (
-        sb.table("ataques")
-        .select("*")
-        .gte("timestamp", desde)
-        .lt("timestamp", hasta)
-        .order("timestamp", desc=False)
-        .limit(5000)
-        .execute()
-    )
+    while True:
+        res = (
+            sb.table("ataques")
+            .select("*")
+            .gte("timestamp", desde)
+            .lt("timestamp", hasta)
+            .order("timestamp", desc=False)
+            .range(page * page_size, (page + 1) * page_size - 1)
+            .execute()
+        )
+        if not res.data:
+            break
+        todos.extend(res.data)
+        if len(res.data) < page_size:
+            break
+        page += 1
  
-    if not res.data:
+    if not todos:
         return pd.DataFrame()
  
-    df = pd.DataFrame(res.data)
+    df = pd.DataFrame(todos)
     df["timestamp"] = pd.to_datetime(df["timestamp"], utc=True, format='ISO8601')
  
     for col in ("src_port", "dst_port", "alert_severity", "latitude", "longitude"):
