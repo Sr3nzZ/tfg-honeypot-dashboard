@@ -9,14 +9,16 @@ from ui import components as ui
 def _top_ports(df: pd.DataFrame, n: int = TOP_N) -> pd.DataFrame:
     data = (
         df["dst_port"].dropna().astype(int)
-        .value_counts().head(n)
+        .value_counts()
+        .head(n)
         .reset_index()
         .rename(columns={"dst_port": "Port", "count": "Attacks"})
     )
 
-    data["Service"] = data["Port"].map(
-        lambda p: PORT_NAMES.get(int(p), str(int(p)))
-    )
+    def map_service(p):
+        return PORT_NAMES.get(int(p), "Other")
+
+    data["Service"] = data["Port"].map(map_service)
 
     return data
 
