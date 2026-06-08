@@ -70,13 +70,7 @@ def render(df: pd.DataFrame) -> None:
         ui.plot(_create_horizontal_bar_chart(_top_usernames(df_cowrie), "Attempts", "Username", "Top usernames", PALETTE_SEQUENTIAL_PURPLE), key="creds_users")
     with col_pass:
         ui.plot(
-            _create_horizontal_bar_chart(
-                _top_passwords(df_cowrie),
-                "Attempts",
-                "Password",
-                "Top passwords",
-                PALETTE_SEQUENTIAL_RED
-            ),
+            _create_password_treemap(_top_passwords(df_cowrie)),
             key="creds_pass"
         )
     with col_combo:
