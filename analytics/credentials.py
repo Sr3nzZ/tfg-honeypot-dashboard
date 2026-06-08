@@ -46,8 +46,15 @@ def _create_horizontal_bar_chart(df_datos, x, y, titulo, paleta) -> px.Figure:
     apply_yaxis_reversed(fig)
     return fig
 
-def _create_wordcloud(series: pd.Series, title: str) -> plt.Figure:
+def _create_wordcloud(series: pd.Series, title: str):
     text = " ".join(series.dropna().astype(str))
+
+    if not text.strip():
+        fig, ax = plt.subplots()
+        ax.text(0.5, 0.5, "No data available", ha="center", va="center")
+        ax.axis("off")
+        ax.set_title(title)
+        return fig
 
     wc = WordCloud(
         width=800,
