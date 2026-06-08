@@ -44,9 +44,22 @@ def _create_horizontal_bar_chart(df_datos, x, y, titulo, paleta) -> px.Figure:
     apply_yaxis_reversed(fig)
     return fig
 
+def _create_password_treemap(df: pd.DataFrame) -> px.Figure:
+    fig = px.treemap(
+        df,
+        path=["Password"],
+        values="Attempts",
+        title="Password distribution (Treemap)",
+        color="Attempts",
+        color_continuous_scale=PALETTE_SEQUENTIAL_RED,
+    )
+
+    apply_base_layout(fig)
+    return fig
+
 
 def render(df: pd.DataFrame) -> None:
-    ui.section("🔐 SSH credentials captured (Cowrie)")
+    ui.section("🔐 SSH credentials captured")
     df_cowrie = _filter_cowrie(df)
     if df_cowrie.empty:
         ui.no_data("Cowrie")
@@ -56,7 +69,16 @@ def render(df: pd.DataFrame) -> None:
     with col_user:
         ui.plot(_create_horizontal_bar_chart(_top_usernames(df_cowrie), "Attempts", "Username", "Top usernames", PALETTE_SEQUENTIAL_PURPLE), key="creds_users")
     with col_pass:
-        ui.plot(_create_horizontal_bar_chart(_top_passwords(df_cowrie), "Attempts", "Password", "Top passwords", PALETTE_SEQUENTIAL_RED), key="creds_pass")
+        ui.plot(
+            _create_horizontal_bar_chart(
+                _top_passwords(df_cowrie),
+                "Attempts",
+                "Password",
+                "Top passwords",
+                PALETTE_SEQUENTIAL_RED
+            ),
+            key="creds_pass"
+        )
     with col_combo:
         ui.plot(_create_horizontal_bar_chart(_top_username_password_combinations(df_cowrie), "Attempts", "Combination", "Top combinations", PALETTE_SEQUENTIAL_ORANGE), key="creds_combo")
     ui.separator()
