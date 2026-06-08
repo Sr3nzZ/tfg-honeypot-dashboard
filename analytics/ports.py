@@ -28,15 +28,16 @@ def _attacks_by_honeypot(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def _create_ports_chart(df_puertos: pd.DataFrame) -> px.Figure:
-    fig = px.bar(
-        df_puertos, x="Service", y="Attacks",
+    fig = px.pie(
+        df_ports,
+        names="Service",
+        values="Attacks",
         title=f"Top {TOP_N} most attacked ports",
-        color="Attacks", color_continuous_scale=PALETTE_SEQUENTIAL_BLUE,
-        text="Attacks",
+        color_discrete_sequence=PALETTE_CATEGORICAL,
+        hole=0.4,  # opcional (donut style)
     )
-    apply_base_layout(fig)
-    fig.update_layout(xaxis_tickangle=-35)
-    fig.update_traces(textposition="outside")
+
+    apply_base_layout(fig, legend=dict(orientation="h", y=-0.1))
     return fig
 
 
