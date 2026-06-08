@@ -17,32 +17,20 @@ def _get_client():
 @st.cache_data(ttl=CACHE_TTL)
 def load_data(dias: int) -> pd.DataFrame:
     sb = _get_client()
-    desde = "2026-05-27T00:00:00Z"
-    
-    todos = []
-    page = 0
-    page_size = 1000
+    desde = "2026-05-27:00:00:00Z"
 
-    while True:
-        res = (
-            sb.table("ataques")
-            .select("*")
-            .gte("timestamp", desde)
-            .order("timestamp", desc=True)
-            .range(page * page_size, (page + 1) * page_size - 1)
-            .execute()
-        )
-        if not res.data:
-            break
-        todos.extend(res.data)
-        if len(res.data) < page_size:
-            break
-        page += 1
+    res = (
+        sb.table("ataques")
+        .select("*")
+        .gte("timestamp", desde)
+        .order("timestamp", desc=True)
+        .execute()
+    )
 
-    if not todos:
+    if not res.data:
         return pd.DataFrame()
 
-    df = pd.DataFrame(todos)
+    df = pd.DataFrame(res.data)
     df["timestamp"] = pd.to_datetime(df["timestamp"], utc=True, format='ISO8601')
 
     for col in ("src_port", "dst_port", "alert_severity", "latitude", "longitude"):
