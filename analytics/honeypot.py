@@ -56,7 +56,7 @@ def _create_pie_chart(df: pd.DataFrame) -> px.Figure:
 
     return fig
 
-def _bar_heatmap_data(df: pd.DataFrame) -> pd.DataFrame:
+def _country_honeypot_data(df: pd.DataFrame) -> pd.DataFrame:
     return (
         df.groupby(["country", "honeypot"])
         .size()
@@ -64,14 +64,14 @@ def _bar_heatmap_data(df: pd.DataFrame) -> pd.DataFrame:
     )
 
 
-def _create_bar_heatmap(df: pd.DataFrame):
+def _create_country_honeypot_chart(df: pd.DataFrame):
     fig = px.bar(
         df,
         x="country",
         y="Attacks",
         color="honeypot",
         barmode="group",
-        title="Honeypot activity by country",
+        title="Attacks by Country and Honeypot"
     )
 
     apply_base_layout(fig, margin=dict(l=10, r=10, t=40, b=10))
@@ -105,12 +105,11 @@ def render(df: pd.DataFrame) -> None:
 
     ui.separator()
 
-    df_bar = _bar_heatmap_data(df_filtered)
+    df_bar = _country_honeypot_data(df)
 
-    if not df_bar.empty:
-        ui.plot(
-            _create_bar_heatmap(df_bar),
-            key="honeypot_bar_heatmap"
-        )
+    ui.plot(
+        _create_country_honeypot_chart(df_bar),
+        key="honeypot_country_bar"
+    )
 
     ui.separator()
