@@ -7,6 +7,8 @@ layout.configure_page()
 dias, honeypot_sel = layout.render_sidebar()
 
 df_raw = data.load_data(dias)
+st.write(f"Filas cargadas: {len(df_raw)}")
+st.write(df_raw.head())
 
 if df_raw.empty:
     st.warning("No data available. Make sure exportar.py is running on the EC2 instance.")
