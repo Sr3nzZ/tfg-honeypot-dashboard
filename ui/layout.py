@@ -1,7 +1,7 @@
 # ui/layout.py
 import streamlit as st
 from datetime import datetime
-from config.settings import APP_TITLE, APP_DESCRIPTION, RANGOS_TIEMPO, HONEYPOTS
+from config.settings import APP_TITLE, RANGOS_TIEMPO, HONEYPOTS
 from ui.styles import CSS
 
 
@@ -17,7 +17,6 @@ def configure_page() -> None:
 def render_sidebar() -> tuple[int, str]:
     with st.sidebar:
         st.title(f"{APP_TITLE.split('·')[0].strip()}")
-        st.caption(APP_DESCRIPTION)
         st.divider()
 
         dias = st.selectbox(
