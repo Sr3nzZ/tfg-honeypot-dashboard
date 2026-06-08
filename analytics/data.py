@@ -17,7 +17,7 @@ def _get_client():
 @st.cache_data(ttl=CACHE_TTL)
 def load_data(dias: int) -> pd.DataFrame:
     sb = _get_client()
-    desde = (datetime.utcnow() - timedelta(days=dias)).isoformat()
+    desde = "2026-05-27:00:00:00Z"
 
     res = (
         sb.table("ataques")
