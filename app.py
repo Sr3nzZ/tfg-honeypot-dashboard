@@ -4,7 +4,7 @@ import time
 from ui import layout
 from analytics import data, metrics, geo, temporal, ports, credentials, suricata
  
-layout.configurar_pagina()
+layout.configure_page()
  
 @st.cache_data(ttl=3600)
 def get_all_data():
