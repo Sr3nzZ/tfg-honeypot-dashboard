@@ -43,7 +43,7 @@ with st.sidebar:
     st.title("Honeypot Dashboard")
     st.caption("Real-time threat analysis")
     st.divider()
-    st.info("Data from May 27 – Jun 3, 2026")
+    st.info("Data from May 27 – Jun 4, 2026")
     st.caption(
         "Replaying attack data in real-time simulation. "
         "The system is designed for live updates via EC2 exporter. "

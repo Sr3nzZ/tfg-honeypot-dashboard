@@ -57,7 +57,7 @@ def _create_horizontal_bar_chart(df_datos, x, y, titulo, paleta) -> px.Figure:
         y=y,
         orientation="h",
         title=titulo,
-        color=x,  # si quieres quitar problemas visuales, puedes eliminar esta línea
+        color=x,  
         color_continuous_scale=paleta,
     )
     fig.update_layout(

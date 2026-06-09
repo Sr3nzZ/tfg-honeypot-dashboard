@@ -1,12 +1,12 @@
 APP_TITLE       = "Honeypot Dashboard"
 
 STARTING_DATE = "2026-05-27"
-LAST_DATE    = "2026-06-03"
+LAST_DATE    = "2026-06-04"
 
 TIME_RANGE = {
     1: "Last day",
     3: "Last 3 days",
-    8: "Full period (May 27 – Jun 3)",
+    8: "Full period (May 27 – Jun 4)",
 }
 
 HONEYPOTS = [

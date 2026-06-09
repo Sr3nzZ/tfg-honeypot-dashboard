@@ -29,7 +29,7 @@ def render_sidebar() -> tuple[int, str]:
         honeypot = st.selectbox("Honeypot", HONEYPOTS)
 
         st.divider()
-        st.info("Data from May 27 – Jun 3, 2026")
+        st.info("Data from May 27 – Jun 4, 2026")
         st.caption(
             "The system is designed for real-time updates. "
             "Data has been scoped to this period due to storage constraints."
